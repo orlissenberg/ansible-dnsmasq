@@ -1,0 +1,43 @@
+---
+# tasks file for dnsmasq
+
+# http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
+
+# DON'T PANIC:
+# ﻿sudo tail -n 200 /var/log/syslog
+
+- name: Remove bind
+  apt:
+    name: bind9
+    state: absent
+    purge: yes
+
+- name: Add dnsmasq
+  apt:
+    # foo=1.00 for a specific version or deb: /tmp/foo.deb to install a debian package
+    name: dnsmasq
+    state: present
+    # purge: yes (optional: if state is set to absent)
+    update_cache: no
+
+- name: Create dnsmasq.conf
+  template:
+    src: "dnsmasq.conf.j2"
+    dest: "/etc/dnsmasq.conf"
+    owner: root
+    group: root
+    mode: "u=rw,g=rw,o=r"
+
+- name: Update resolv.conf
+  template:
+    src: "resolv.conf.j2"
+    dest: "/etc/resolv.conf"
+    owner: root
+    group: root
+    mode: "u=rw,g=rw,o=r"
+
+# http://docs.ansible.com/ansible/service_module.html
+- name: Restart dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted

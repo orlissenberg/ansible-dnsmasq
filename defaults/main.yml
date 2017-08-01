@@ -1,0 +1,4 @@
+---
+# defaults file for dnsmasq
+
+dnsmasq_config_lines: []
